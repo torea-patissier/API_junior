@@ -47,6 +47,7 @@ class Companies
     private $city;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Offers::class)]
+    #[ORM\JoinColumn(nullable: false)]
     #[ApiSubresource]
     private $offers;
 

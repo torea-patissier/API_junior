@@ -44,7 +44,7 @@ class Offers
     private $type_of_work;
 
     #[ORM\ManyToOne(targetEntity: Companies::class, inversedBy: 'offers')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'cascade')] // DELETE ON CASCADE
     private $company;
 
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'offers')]
@@ -59,6 +59,7 @@ class Offers
 
         $this->publication_date = new \DateTime();
         $this->expiration_date = new \Datetime();
+
     }
 
     public function getId(): ?int
