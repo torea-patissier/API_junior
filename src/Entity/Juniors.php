@@ -7,24 +7,14 @@ use App\Repository\JuniorsRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et choisir les données
 use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validation
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity; // Email unique
 
 #[ORM\Entity(repositoryClass: JuniorsRepository::class)]
-// #[ApiResource(
-//     normalizationContext: ['groups' => ['read:collection']],
-//     itemOperations: [
-//         // 'put' => [
-
-//         //     'denormalization_context' => ['groups' =>['read:collection','read:item','read:Juniors']]
-//         // ],
-//         'delete',
-//         'get' => [
-
-//             'normalization_context' => ['groups' =>['read:collection','read:item','read:ok']]
-//         ]
-//     ]
-// )]
-
 #[ApiResource(normalizationContext: ['groups' => ['item']])]
+#[UniqueEntity(
+    'email',
+    message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
+)]
 class Juniors
 {
     #[ORM\Id]
@@ -35,8 +25,8 @@ class Juniors
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(["item"])]
     #[Assert\Email(
-        message: 'The email {{ value }} is not a valid email.',
-    )]    
+        message: 'L\'email {{ value }} n\'est pas valide.', // A enlever si site en anglais
+    )]
     private $email;
     
     #[ORM\Column(type: 'string', length: 255)]
@@ -65,7 +55,7 @@ class Juniors
 
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'juniors')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['item'])]
+    // #[Groups(['item'])]
     private $city;
 
     #[ORM\ManyToOne(targetEntity: Profession::class, inversedBy: 'juniors')]

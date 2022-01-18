@@ -25,11 +25,6 @@ class Profession
     #[ORM\OneToMany(mappedBy: 'profession', targetEntity: Juniors::class)]
     private $juniors;
 
-    public function __construct()
-    {
-        $this->juniors = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;

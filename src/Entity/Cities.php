@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et choisir les données
 use Doctrine\ORM\Mapping as ORM;
-
 #[ORM\Entity(repositoryClass: CitiesRepository::class)]
 #[ApiResource]
 class Cities
@@ -37,6 +36,7 @@ class Cities
         $this->companies = new ArrayCollection();
         $this->offers = new ArrayCollection();
         $this->juniors = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int

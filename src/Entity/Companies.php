@@ -8,9 +8,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validation
-
+use ApiPlatform\Core\Annotation\ApiSubresource; // API SubResource
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity; // Email unique
 #[ORM\Entity(repositoryClass: CompaniesRepository::class)]
+
 #[ApiResource]
+#[UniqueEntity(
+    'email',
+    message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
+)]
 class Companies
 {
     #[ORM\Id]
@@ -41,6 +47,7 @@ class Companies
     private $city;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Offers::class)]
+    #[ApiSubresource]
     private $offers;
 
     #[ORM\Column(type: 'string', length: 255)]

@@ -5,9 +5,16 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\OffersRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use ApiPlatform\Core\Annotation\ApiFilter; // Filtre
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\TermFilter; // Filtre de termes
+use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
 #[ORM\Entity(repositoryClass: OffersRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    paginationItemsPerPage: 10 // Pagination, items par page
+)]
+// #[ApiFilter(OrderFilter::class, properties: ['id' => 'ASC', 'description' => 'DESC'])]
+#[ApiFilter(SearchFilter::class, properties: ['city' => 'exact', 'diploma' => 'exact'])]
 class Offers
 {
     #[ORM\Id]
