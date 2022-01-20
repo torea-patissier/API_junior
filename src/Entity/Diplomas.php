@@ -28,10 +28,14 @@ class Diplomas
     #[ORM\OneToMany(mappedBy: 'diploma', targetEntity: Juniors::class)]
     private $juniors;
 
+    #[ORM\OneToMany(mappedBy: 'diploma', targetEntity: User::class)]
+    private $users;
+
     public function __construct()
     {
         $this->offers = new ArrayCollection();
         $this->juniors = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -105,6 +109,36 @@ class Diplomas
             // set the owning side to null (unless already changed)
             if ($junior->getDiploma() === $this) {
                 $junior->setDiploma(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setDiploma($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getDiploma() === $this) {
+                $user->setDiploma(null);
             }
         }
 

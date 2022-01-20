@@ -25,6 +25,14 @@ class Profession
     #[ORM\OneToMany(mappedBy: 'profession', targetEntity: Juniors::class)]
     private $juniors;
 
+    #[ORM\OneToMany(mappedBy: 'profession', targetEntity: User::class)]
+    private $users;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -66,6 +74,36 @@ class Profession
             // set the owning side to null (unless already changed)
             if ($junior->getProfession() === $this) {
                 $junior->setProfession(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setProfession($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getProfession() === $this) {
+                $user->setProfession(null);
             }
         }
 
