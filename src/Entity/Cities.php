@@ -27,9 +27,6 @@ class Cities
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: Offers::class)]
     private $offers;
 
-    #[ORM\OneToMany(mappedBy: 'city', targetEntity: Juniors::class)]
-
-    private $juniors;
 
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: User::class)]
     private $users;
@@ -38,7 +35,6 @@ class Cities
     {
         $this->companies = new ArrayCollection();
         $this->offers = new ArrayCollection();
-        $this->juniors = new ArrayCollection();
         $this->users = new ArrayCollection();
     }
 
@@ -113,36 +109,6 @@ class Cities
             // set the owning side to null (unless already changed)
             if ($offer->getCity() === $this) {
                 $offer->setCity(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Juniors[]
-     */
-    public function getJuniors(): Collection
-    {
-        return $this->juniors;
-    }
-
-    public function addJunior(Juniors $junior): self
-    {
-        if (!$this->juniors->contains($junior)) {
-            $this->juniors[] = $junior;
-            $junior->setCity($this);
-        }
-
-        return $this;
-    }
-
-    public function removeJunior(Juniors $junior): self
-    {
-        if ($this->juniors->removeElement($junior)) {
-            // set the owning side to null (unless already changed)
-            if ($junior->getCity() === $this) {
-                $junior->setCity(null);
             }
         }
 

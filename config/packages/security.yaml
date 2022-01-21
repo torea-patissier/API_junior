@@ -1,5 +1,5 @@
-security:
     # https://symfony.com/doc/current/security.html#c-hashing-passwords
+security:
     password_hashers:
         App\Entity\User: 'auto'
 
@@ -17,10 +17,13 @@ security:
             pattern: ^/_(profiler|wdt)|css|images|js/  
             security: false
         main:
-            lazy: true    
+            lazy: true  
+            stateless: true
+            # username_path: email
             provider: app_user_provider  
             json_login:
-                check_path: api_login
+                check_path: /api/login
+                            
         # login:
         #     pattern: ^/api/login
         #     stateless: true

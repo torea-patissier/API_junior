@@ -22,9 +22,6 @@ class Profession
     #[Groups(['item'])] 
     private $name;
 
-    #[ORM\OneToMany(mappedBy: 'profession', targetEntity: Juniors::class)]
-    private $juniors;
-
     #[ORM\OneToMany(mappedBy: 'profession', targetEntity: User::class)]
     private $users;
 
@@ -46,36 +43,6 @@ class Profession
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Juniors[]
-     */
-    public function getJuniors(): Collection
-    {
-        return $this->juniors;
-    }
-
-    public function addJunior(Juniors $junior): self
-    {
-        if (!$this->juniors->contains($junior)) {
-            $this->juniors[] = $junior;
-            $junior->setProfession($this);
-        }
-
-        return $this;
-    }
-
-    public function removeJunior(Juniors $junior): self
-    {
-        if ($this->juniors->removeElement($junior)) {
-            // set the owning side to null (unless already changed)
-            if ($junior->getProfession() === $this) {
-                $junior->setProfession(null);
-            }
-        }
 
         return $this;
     }
