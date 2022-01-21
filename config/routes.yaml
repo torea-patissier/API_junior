@@ -4,7 +4,6 @@ controllers:
 kernel:
     resource: ../src/Kernel.php
     type: annotation
-authentication_token:
-    path: /authentication_token
+api_login_check:
+    path: /api/login
     methods: ['POST']
-

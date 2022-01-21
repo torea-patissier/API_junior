@@ -6,32 +6,35 @@ security:
     # https://symfony.com/doc/current/security/authenticator_manager.html
     enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
-    # encoders:
-    #     App\Entity\User:
-    #         algorithm: bcrypt
     providers:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: email
-
     firewalls:
         dev:
-            pattern: ^/_(profiler|wdt)
+            pattern: ^/_(profiler|wdt)|css|images|js/  
             security: false
         main:
-            stateless: true
-            provider: app_user_provider
+            lazy: true    
+            provider: app_user_provider  
             json_login:
-                check_path: /authentication_token
-                username_path: email
-                password_path: password
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
-            jwt: ~
+                check_path: api_login
+        # login:
+        #     pattern: ^/api/login
+        #     stateless: true
+        #     json_login:
+        #         check_path: /api/login_check
+        #         username_path: email
+        #         success_handler: lexik_jwt_authentication.handler.authentication_success
+        #         failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
-    access_control:
-        - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
-        - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        # api:
+        #     pattern:   ^/api/
+        #     stateless: true
+        #     jwt: ~            
+
+    # access_control:
+    #     - { path: ^/api/login, roles: PUBLIC_ACCESS }
+    #     - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
