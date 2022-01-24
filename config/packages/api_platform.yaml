@@ -4,8 +4,8 @@ api_platform:
     patch_formats:
         jsonld: ['application/merge-patch+json'],
         json: ['application/json']
-    # swagger:
-    #      api_keys:
-    #          apiKey:
-    #             name: Authorization
-    #             type: header
+    swagger:
+         api_keys:
+             apiKey:
+                name: Authorization
+                type: header
