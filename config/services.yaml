@@ -21,7 +21,10 @@ services:
             - '../src/Kernel.php'
             - '../src/Tests/'
         #     - '../src/DataFixtures/AppFixtures'
-        # tags: ['doctrine.fixture.orm']            
+        # tags: ['doctrine.fixture.orm']    
+    App\OpenApi\JwtDecorator:
+        decorates: 'api_platform.openapi.factory'
+        arguments: ['@.inner']                 
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
