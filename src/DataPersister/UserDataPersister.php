@@ -45,3 +45,5 @@ class UserDataPersister implements DataPersisterInterface
         $this->entityManager->flush();
     }
 }
+
+?>
