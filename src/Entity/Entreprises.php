@@ -26,6 +26,10 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
+    #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'entreprises')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $city;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -99,5 +103,17 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getCity(): ?Cities
+    {
+        return $this->city;
+    }
+
+    public function setCity(?Cities $city): self
+    {
+        $this->city = $city;
+
+        return $this;
     }
 }
