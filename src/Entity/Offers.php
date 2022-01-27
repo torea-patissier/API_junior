@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\OffersRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter; // Filtre
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
@@ -44,10 +46,6 @@ class Offers
     #[ORM\Column(type: 'string', length: 255)]
     private $type_of_work;
 
-    #[ORM\ManyToOne(targetEntity: Companies::class, inversedBy: 'offers')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'cascade')] // DELETE ON CASCADE
-    private $company;
-
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'offers')]
     #[ORM\JoinColumn(nullable: false)]
     private $city;
@@ -56,10 +54,14 @@ class Offers
     #[ORM\JoinColumn(nullable: false)]
     private $diploma;
 
+    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: Entreprises::class)]
+    private $entreprises;
+
     public function __construct() {
 
         $this->publication_date = new \DateTime();
         $this->expiration_date = new \Datetime();
+        $this->entreprises = new ArrayCollection();
 
     }
 
@@ -152,18 +154,6 @@ class Offers
         return $this;
     }
 
-    public function getCompany(): ?Companies
-    {
-        return $this->company;
-    }
-
-    public function setCompany(?Companies $company): self
-    {
-        $this->company = $company;
-
-        return $this;
-    }
-
     public function getCity(): ?Cities
     {
         return $this->city;
@@ -184,6 +174,36 @@ class Offers
     public function setDiploma(?Diplomas $diploma): self
     {
         $this->diploma = $diploma;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Entreprises[]
+     */
+    public function getEntreprises(): Collection
+    {
+        return $this->entreprises;
+    }
+
+    public function addEntreprise(Entreprises $entreprise): self
+    {
+        if (!$this->entreprises->contains($entreprise)) {
+            $this->entreprises[] = $entreprise;
+            $entreprise->setOffer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEntreprise(Entreprises $entreprise): self
+    {
+        if ($this->entreprises->removeElement($entreprise)) {
+            // set the owning side to null (unless already changed)
+            if ($entreprise->getOffer() === $this) {
+                $entreprise->setOffer(null);
+            }
+        }
 
         return $this;
     }

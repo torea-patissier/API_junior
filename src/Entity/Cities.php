@@ -21,9 +21,6 @@ class Cities
     #[Groups(['item'])] 
     private $name; 
 
-    #[ORM\OneToMany(mappedBy: 'city', targetEntity: Companies::class)]
-    private $companies;
-
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: Offers::class)]
     private $offers;
 
@@ -31,11 +28,14 @@ class Cities
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: User::class)]
     private $users;
 
+    #[ORM\OneToMany(mappedBy: 'city', targetEntity: Entreprises::class)]
+    private $entreprises;
+
     public function __construct()
     {
-        $this->companies = new ArrayCollection();
         $this->offers = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->entreprises = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -55,35 +55,7 @@ class Cities
         return $this;
     }
 
-    /**
-     * @return Collection|Companies[]
-     */
-    public function getCompanies(): Collection
-    {
-        return $this->companies;
-    }
 
-    public function addCompany(Companies $company): self
-    {
-        if (!$this->companies->contains($company)) {
-            $this->companies[] = $company;
-            $company->setCity($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCompany(Companies $company): self
-    {
-        if ($this->companies->removeElement($company)) {
-            // set the owning side to null (unless already changed)
-            if ($company->getCity() === $this) {
-                $company->setCity(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|Offers[]
@@ -139,6 +111,36 @@ class Cities
             // set the owning side to null (unless already changed)
             if ($user->getCity() === $this) {
                 $user->setCity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Entreprises[]
+     */
+    public function getEntreprises(): Collection
+    {
+        return $this->entreprises;
+    }
+
+    public function addEntreprise(Entreprises $entreprise): self
+    {
+        if (!$this->entreprises->contains($entreprise)) {
+            $this->entreprises[] = $entreprise;
+            $entreprise->setCity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEntreprise(Entreprises $entreprise): self
+    {
+        if ($this->entreprises->removeElement($entreprise)) {
+            // set the owning side to null (unless already changed)
+            if ($entreprise->getCity() === $this) {
+                $entreprise->setCity(null);
             }
         }
 

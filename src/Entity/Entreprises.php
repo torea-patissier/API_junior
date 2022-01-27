@@ -26,6 +26,26 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private $name;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $address;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $description;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $avatar;
+
+    #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'entreprises')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $city;
+
+    #[ORM\ManyToOne(targetEntity: Offers::class, inversedBy: 'entreprises')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $offer;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -99,5 +119,77 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(string $avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getCity(): ?Cities
+    {
+        return $this->city;
+    }
+
+    public function setCity(?Cities $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getOffer(): ?Offers
+    {
+        return $this->offer;
+    }
+
+    public function setOffer(?Offers $offer): self
+    {
+        $this->offer = $offer;
+
+        return $this;
     }
 }
