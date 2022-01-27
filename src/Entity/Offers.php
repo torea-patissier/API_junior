@@ -152,7 +152,6 @@ class Offers
 
         return $this;
     }
-
     public function getCity(): ?Cities
     {
         return $this->city;

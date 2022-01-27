@@ -65,27 +65,6 @@ class Cities
         return $this->offers;
     }
 
-    public function addOffer(Offers $offer): self
-    {
-        if (!$this->offers->contains($offer)) {
-            $this->offers[] = $offer;
-            $offer->setCity($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOffer(Offers $offer): self
-    {
-        if ($this->offers->removeElement($offer)) {
-            // set the owning side to null (unless already changed)
-            if ($offer->getCity() === $this) {
-                $offer->setCity(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|User[]
