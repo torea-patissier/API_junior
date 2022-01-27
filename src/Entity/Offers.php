@@ -9,8 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter; // Filtre
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\TermFilter; // Filtre de termes
-use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
+
 
 #[ORM\Entity(repositoryClass: OffersRepository::class)]
 #[ApiResource(
@@ -54,14 +53,14 @@ class Offers
     #[ORM\JoinColumn(nullable: false)]
     private $diploma;
 
-    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: Entreprises::class)]
-    private $entreprises;
+    #[ORM\ManyToOne(targetEntity: Entreprises::class, inversedBy: 'offers')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $entreprise;
 
     public function __construct() {
 
         $this->publication_date = new \DateTime();
         $this->expiration_date = new \Datetime();
-        $this->entreprises = new ArrayCollection();
 
     }
 
@@ -178,32 +177,14 @@ class Offers
         return $this;
     }
 
-    /**
-     * @return Collection|Entreprises[]
-     */
-    public function getEntreprises(): Collection
+    public function getEntreprise(): ?Entreprises
     {
-        return $this->entreprises;
+        return $this->entreprise;
     }
 
-    public function addEntreprise(Entreprises $entreprise): self
+    public function setEntreprise(?Entreprises $entreprise): self
     {
-        if (!$this->entreprises->contains($entreprise)) {
-            $this->entreprises[] = $entreprise;
-            $entreprise->setOffer($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEntreprise(Entreprises $entreprise): self
-    {
-        if ($this->entreprises->removeElement($entreprise)) {
-            // set the owning side to null (unless already changed)
-            if ($entreprise->getOffer() === $this) {
-                $entreprise->setOffer(null);
-            }
-        }
+        $this->entreprise = $entreprise;
 
         return $this;
     }

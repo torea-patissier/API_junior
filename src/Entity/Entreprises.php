@@ -4,8 +4,11 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\EntreprisesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: EntreprisesRepository::class)]
@@ -42,9 +45,14 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private $city;
 
-    #[ORM\ManyToOne(targetEntity: Offers::class, inversedBy: 'entreprises')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $offer;
+    #[ORM\OneToMany(mappedBy: 'entreprise', targetEntity: Offers::class, orphanRemoval: true)]
+    private $offers;
+
+    public function __construct()
+    {
+        $this->offers = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -181,14 +189,32 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getOffer(): ?Offers
+    /**
+     * @return Collection|Offers[]
+     */
+    public function getOffers(): Collection
     {
-        return $this->offer;
+        return $this->offers;
     }
 
-    public function setOffer(?Offers $offer): self
+    public function addOffer(Offers $offer): self
     {
-        $this->offer = $offer;
+        if (!$this->offers->contains($offer)) {
+            $this->offers[] = $offer;
+            $offer->setEntreprise($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOffer(Offers $offer): self
+    {
+        if ($this->offers->removeElement($offer)) {
+            // set the owning side to null (unless already changed)
+            if ($offer->getEntreprise() === $this) {
+                $offer->setEntreprise(null);
+            }
+        }
 
         return $this;
     }
