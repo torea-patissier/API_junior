@@ -30,7 +30,6 @@ final class Version20220110134553 extends AbstractMigration
               image VARCHAR(255) NOT NULL,
                type_of_contract VARCHAR(255) NOT NULL,
                 type_of_work VARCHAR(255) NOT NULL,
-                 INDEX IDX_DA460427979B1AD6 (company_id),
                   INDEX IDX_DA4604278BAC62AF (city_id),
                    INDEX IDX_DA460427A99ACEB5 (diploma_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE offers ADD CONSTRAINT FK_DA4604278BAC62AF FOREIGN KEY (city_id) REFERENCES cities (id)');
