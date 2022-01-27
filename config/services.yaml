@@ -20,7 +20,7 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
-            # - '../src/Controller'  # SUPPRIMER SI BESOIN
+            - '../src/Controller'  # SUPPRIMER SI BESOIN
         #     - '../src/DataFixtures/AppFixtures'
         # tags: ['doctrine.fixture.orm']    
     App\OpenApi\JwtDecorator:

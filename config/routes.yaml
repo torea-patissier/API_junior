@@ -10,5 +10,9 @@ api_login_check:
     path: /authentication_token
     methods: ['POST']
 
+api_login_check_entreprise:
+    path: /authentication_token_entreprise
+    methods: ['POST']
+
 gesdinet_jwt_refresh_token:
     path: /api/token/refresh

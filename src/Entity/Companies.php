@@ -17,7 +17,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity; // Email unique
     'email',
     message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
 )]
-class Companies
+class Companies 
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

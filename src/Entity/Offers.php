@@ -9,6 +9,7 @@ use ApiPlatform\Core\Annotation\ApiFilter; // Filtre
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\TermFilter; // Filtre de termes
 use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
+
 #[ORM\Entity(repositoryClass: OffersRepository::class)]
 #[ApiResource(
     paginationItemsPerPage: 10 // Pagination, items par page
