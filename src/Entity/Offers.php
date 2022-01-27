@@ -44,10 +44,6 @@ class Offers
     #[ORM\Column(type: 'string', length: 255)]
     private $type_of_work;
 
-    #[ORM\ManyToOne(targetEntity: Companies::class, inversedBy: 'offers')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'cascade')] // DELETE ON CASCADE
-    private $company;
-
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'offers')]
     #[ORM\JoinColumn(nullable: false)]
     private $city;
@@ -151,19 +147,7 @@ class Offers
 
         return $this;
     }
-
-    public function getCompany(): ?Companies
-    {
-        return $this->company;
-    }
-
-    public function setCompany(?Companies $company): self
-    {
-        $this->company = $company;
-
-        return $this;
-    }
-
+    
     public function getCity(): ?Cities
     {
         return $this->city;

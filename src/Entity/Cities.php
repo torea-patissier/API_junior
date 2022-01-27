@@ -21,9 +21,6 @@ class Cities
     #[Groups(['item'])] 
     private $name; 
 
-    #[ORM\OneToMany(mappedBy: 'city', targetEntity: Companies::class)]
-    private $companies;
-
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: Offers::class)]
     private $offers;
 
@@ -33,7 +30,6 @@ class Cities
 
     public function __construct()
     {
-        $this->companies = new ArrayCollection();
         $this->offers = new ArrayCollection();
         $this->users = new ArrayCollection();
     }
@@ -51,36 +47,6 @@ class Cities
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Companies[]
-     */
-    public function getCompanies(): Collection
-    {
-        return $this->companies;
-    }
-
-    public function addCompany(Companies $company): self
-    {
-        if (!$this->companies->contains($company)) {
-            $this->companies[] = $company;
-            $company->setCity($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCompany(Companies $company): self
-    {
-        if ($this->companies->removeElement($company)) {
-            // set the owning side to null (unless already changed)
-            if ($company->getCity() === $this) {
-                $company->setCity(null);
-            }
-        }
 
         return $this;
     }
