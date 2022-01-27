@@ -59,10 +59,10 @@ security:
 
     access_control:
         - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing API documentations and Swagger UI
-        - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
-        - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }        
-        - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY, methods: [GET, DELETE] }
-        - { path: ^/api/entreprises, roles: IS_AUTHENTICATED_FULLY, methods: [GET, DELETE] }
+        # - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
+        # - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }        
+        # - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY, methods: [GET, DELETE] }
+        # - { path: ^/api/entreprises, roles: IS_AUTHENTICATED_FULLY, methods: [GET, DELETE] }
        # - { path: ^/authentication_token_entreprise, roles: PUBLIC_ACCESS }
 
 
