@@ -52,6 +52,10 @@ class Offers
     #[ORM\JoinColumn(nullable: false)]
     private $diploma;
 
+    #[ORM\ManyToOne(targetEntity: Entreprises::class, inversedBy: 'offers')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $entreprise;
+
     public function __construct() {
 
         $this->publication_date = new \DateTime();
@@ -168,6 +172,18 @@ class Offers
     public function setDiploma(?Diplomas $diploma): self
     {
         $this->diploma = $diploma;
+
+        return $this;
+    }
+
+    public function getEntreprise(): ?Entreprises
+    {
+        return $this->entreprise;
+    }
+
+    public function setEntreprise(?Entreprises $entreprise): self
+    {
+        $this->entreprise = $entreprise;
 
         return $this;
     }
