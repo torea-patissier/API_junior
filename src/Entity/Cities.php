@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et choisir les données
 use Doctrine\ORM\Mapping as ORM;
+use Proxies\__CG__\App\Entity\User;
+
 #[ORM\Entity(repositoryClass: CitiesRepository::class)]
 #[ApiResource]
 class Cities
