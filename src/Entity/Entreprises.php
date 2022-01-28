@@ -7,11 +7,18 @@ use App\Repository\EntreprisesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validation
 
 #[ORM\Entity(repositoryClass: EntreprisesRepository::class)]
-#[ApiResource()]
+#[UniqueEntity(
+    'email',
+    message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
+)]
+#[ApiResource(normalizationContext: ['groups' => ['item']])]
 class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -20,31 +27,45 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Groups(["item"])]
+    #[Assert\Email(
+        message: 'L\'email {{ value }} n\'est pas valide.', // A enlever si site en anglais
+    )]
     private $email;
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
+    #[Assert\Regex(
+        '/^\w{8,}$/',
+        message: "Le mot de passe de faire au minimum 8 caractères et ne contenir que des chiffres et des lettres (_ et - autorisé)"
+    )]//REGEX du mot de passe
     private $password;
 
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'entreprises')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["item"])]
     private $city;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item"])]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item"])]
     private $description;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item"])]
     private $avatar;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item"])]
     private $address;
 
     #[ORM\OneToMany(mappedBy: 'entreprise', targetEntity: Offers::class, orphanRemoval: true)]
+    #[Groups(["item"])]
     private $offers;
 
     public function __construct()

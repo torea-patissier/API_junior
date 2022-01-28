@@ -5,10 +5,18 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validation
+use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et choisir les données
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource()]
+#[UniqueEntity(
+    'email',
+    message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
+)]
+#[ApiResource(normalizationContext: ['groups' => ['item']])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -17,42 +25,59 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Groups(["item"])]
+    #[Assert\Email(
+        message: 'L\'email {{ value }} n\'est pas valide.', // A enlever si site en anglais
+    )]
     private $email;
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
+    #[Assert\Regex(
+        '/^\w{8,}$/',
+        message: "Le mot de passe de faire au minimum 8 caractères et ne contenir que des chiffres et des lettres (_ et - autorisé)"
+    )]//REGEX du mot de passe
     private $password;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item"])]
     private $firstname;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item"])]
     private $lastname;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item"])]
     private $telephone;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item"])]
     private $description;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item"])]
     private $avatar;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item"])]
     private $year_of_experience;
 
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["item"])]
     private $city;
 
     #[ORM\ManyToOne(targetEntity: Profession::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["item"])]
     private $profession;
 
     #[ORM\ManyToOne(targetEntity: Diplomas::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["item"])]
     private $diploma;
 
     public function getId(): ?int
