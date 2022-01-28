@@ -53,7 +53,7 @@ class Offers
     private $diploma;
 
     #[ORM\ManyToOne(targetEntity: Entreprises::class, inversedBy: 'offers')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'cascade')] // DELETE ON CASCADE
     private $entreprise;
 
     public function __construct() {
