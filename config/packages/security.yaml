@@ -9,7 +9,7 @@ security:
             algorithm: auto
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        # used to reload user from session & other features (e.g. switch_user) ###
+        # used to reload user '' from session & other features (e.g. switch_user) ###
 
         app_entreprise_provider:
             entity:
