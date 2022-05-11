@@ -44,7 +44,7 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'entreprises')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(["item"])]
     private $city;
 
@@ -52,15 +52,15 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["item"])]
     private $name;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(["item"])]
     private $description;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(["item"])]
     private $avatar;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(["item"])]
     private $address;
 
