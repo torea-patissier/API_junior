@@ -21,10 +21,8 @@ class Cities
     #[Groups(['item'])] 
     private $name; 
 
-
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: Offers::class)]
     private $offers;
-
 
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: User::class)]
     private $users;

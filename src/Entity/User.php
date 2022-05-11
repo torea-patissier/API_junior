@@ -31,7 +31,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private $email;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', nullable:true)]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
@@ -49,34 +49,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["item"])]
     private $lastname;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable:true)]
     #[Groups(["item"])]
     private $telephone;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable:true)]
     #[Groups(["item"])]
     private $description;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable:true)]
     #[Groups(["item"])]
     private $avatar;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable:true)]
     #[Groups(["item"])]
     private $year_of_experience;
 
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(["item"])]
     private $city;
 
     #[ORM\ManyToOne(targetEntity: Profession::class, inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(["item"])]
     private $profession;
 
     #[ORM\ManyToOne(targetEntity: Diplomas::class, inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(["item"])]
     private $diploma;
 
