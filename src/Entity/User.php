@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\MeController;
+use App\Controller\RegisterController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -16,7 +19,39 @@ use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et 
     'email',
     message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
 )]
-#[ApiResource(normalizationContext: ['groups' => ['item']])]
+#[ApiResource(
+    // security: 'is_granted("ROLE_USER")',
+    collectionOperations: ['me' => [
+        'pagination_enabled' => false,
+        'path' => '/me', 
+        'method' => 'get',
+        'controller' => MeController::class,
+        'read' => false,
+        // 'openapi_context' => [
+        //     'security' => [['bearerAuth' => []]]
+        // ],
+        'security' => 'is_granted("ROLE_USER")'
+        ], 
+        'register' => [
+            'pagination_enabled' => false,
+            'path' => '/register_user', 
+            'method' => 'post',
+            'controller' => RegisterController::class,
+            'read' => false
+        ]
+
+        
+    ],
+    itemOperations: [
+        'get' => [
+            'controller' => NotFoundAction::class,
+            'openapi_context' => ['summary' => 'Retrieves a Offers resource.'],
+            'read' => false,
+            'output' => false
+        ],
+        'put', 'patch', 'delete'
+    ],
+    normalizationContext: ['groups' => ['item']])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]

@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\MeController;
+use App\Controller\RegisterController;
 use App\Repository\EntreprisesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,7 +21,41 @@ use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validat
     'email',
     message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
 )]
-#[ApiResource(normalizationContext: ['groups' => ['item']])]
+#[ApiResource(
+    // security: 'is_granted("ROLE_ENTREPRISE")',
+    collectionOperations: ['me' => [
+        'pagination_enabled' => false,
+        'path' => '/my', 
+        'method' => 'get',
+        'controller' => MeController::class,
+        'read' => false,
+        // 'openapi_context' => [
+        //     'security' => [['bearerAuth' => []]]
+        // ],
+        'security' => 'is_granted("ROLE_ENTREPRISE")'
+        ], 
+        'register' => [
+            'pagination_enabled' => false,
+            'path' => '/register_company', 
+            'method' => 'post',
+            'controller' => RegisterController::class,
+            'read' => false
+        ]
+
+        
+    ],
+    itemOperations: [
+        'get' => [
+            'controller' => NotFoundAction::class,
+            'openapi_context' => ['summary' => 'Retrieves a Offers resource.'],
+            'read' => false,
+            'output' => false
+        ],
+        'put', 'patch', 'delete'
+        
+        
+    ],
+    normalizationContext: ['groups' => ['item']])]
 class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]

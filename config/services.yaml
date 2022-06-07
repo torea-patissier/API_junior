@@ -20,9 +20,13 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
-            - '../src/Controller'  # SUPPRIMER SI BESOIN
+            # - '../src/Controller'  # SUPPRIMER SI BESOIN
         #     - '../src/DataFixtures/AppFixtures'
-        # tags: ['doctrine.fixture.orm']    
+        # tags: ['doctrine.fixture.orm']   
+    App\Controller\:
+        resource: "../src/Controller"
+        tags: ['controller.service_arguments']                    
+
     App\OpenApi\JwtDecorator:
         decorates: 'api_platform.openapi.factory'
         arguments: ['@.inner']                 
