@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\EntreprisesController;
 use App\Controller\MeController;
 use App\Controller\RegisterController;
 use App\Repository\EntreprisesRepository;
@@ -39,6 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validat
             'path' => '/register_company', 
             'method' => 'post',
             'controller' => RegisterController::class,
+            'validation_groups' => ['register'],
             'read' => false
         ]
 
@@ -51,7 +53,45 @@ use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validat
             'read' => false,
             'output' => false
         ],
-        'put', 'patch', 'delete'
+        'put' => [
+            'method' => 'POST',
+            'controller' => EntreprisesController::class,
+            'deserialize' => false,
+            // 'validation_groups' => ['user:update:validate', 'user:update:validate-password'],
+            'denormalization_context' => ['groups' => ['entreprises:update']],
+            'openapi_context' => [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'photoFile' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                    'email' => [
+                                        'type' => 'string',
+                                    ],
+                                    'name' => [
+                                        'type' => 'string',
+                                    ],
+                                    'description' => [
+                                        'type' => 'string',
+                                    ],
+                                    'addess' => [
+                                        'type' => 'string',
+                                    ],
+                                    'city' => [
+                                        'type' => 'string',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], 'patch', 'delete'
         
         
     ],
@@ -76,7 +116,8 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     #[Assert\Regex(
         '/^\w{8,}$/',
-        message: "Le mot de passe de faire au minimum 8 caractères et ne contenir que des chiffres et des lettres (_ et - autorisé)"
+        message: "Le mot de passe de faire au minimum 8 caractères et ne contenir que des chiffres et des lettres (_ et - autorisé)",
+        groups:["register"]
     )]//REGEX du mot de passe
     private $password;
 

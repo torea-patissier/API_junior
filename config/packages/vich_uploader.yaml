@@ -1,0 +1,10 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        user_picture:
+            upload_destination: "%app.path.user_picture%"
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            inject_on_load: false
+            delete_on_remove: false
+            delete_on_update: false
