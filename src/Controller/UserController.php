@@ -55,12 +55,12 @@ class UserController extends AbstractController
         $data->setYearOfExperience($yearofexperience);
         $user->setYearOfExperience($yearofexperience);
       }
-    if ($city = $parameters->get('city')) {
-        $data->setCity($city);
-        $user->setCity($city);
-      }
+    // if ($city = $parameters->get('city')) {
+    //     $data->setCity($city);
+    //     $user->setCity($city);
+    //   }
     if ($uploadedFile) {
-      $data->setAvatar($data->getAvatar());
+    //   $data->setAvatar($data->getAvatar());
       $data->setPhotoFile($uploadedFile);
     }
     $this->entityManagerInterface->flush();

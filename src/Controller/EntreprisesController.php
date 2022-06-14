@@ -48,7 +48,7 @@ class EntreprisesController extends AbstractController
         $entreprises->setCity($city);
       }
     if ($uploadedFile) {
-      $data->setAvatar($data->getAvatar());
+      // $data->setAvatar($data->getAvatar());
       $data->setPhotoFile($uploadedFile);
     }
     $this->entityManagerInterface->flush();
