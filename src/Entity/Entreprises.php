@@ -75,9 +75,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                                         'type' => 'string',
                                         'format' => 'binary',
                                     ],
-                                    'email' => [
-                                        'type' => 'string',
-                                    ],
+                                    // 'email' => [
+                                    //     'type' => 'string',
+                                    // ],
                                     'name' => [
                                         'type' => 'string',
                                     ],
