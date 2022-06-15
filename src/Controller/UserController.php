@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Cities;
+use App\Entity\Diplomas;
+use App\Entity\Profession;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -55,10 +57,33 @@ class UserController extends AbstractController
         $data->setYearOfExperience($yearofexperience);
         $user->setYearOfExperience($yearofexperience);
       }
-    // if ($city = $parameters->get('city')) {
-    //     $data->setCity($city);
-    //     $user->setCity($city);
-    //   }
+    if ($city = $parameters->get('city')) {
+        $newcity = new Cities();
+        $newcity->setName($city);
+        $this->entityManagerInterface->persist($newcity);
+        $this->entityManagerInterface->flush();
+
+        $data->setCity($newcity);
+        $user->setCity($newcity);
+      }
+      if ($diploma = $parameters->get('diploma')) {
+        $newdiploma = new Diplomas();
+        $newdiploma->setName($diploma);
+        $this->entityManagerInterface->persist($newdiploma);
+        $this->entityManagerInterface->flush();
+
+        $data->setDiploma($newdiploma);
+        $user->setDiploma($newdiploma);
+      }
+      if ($profession = $parameters->get('profession')) {
+        $newprofession = new Profession();
+        $newprofession->setName($profession);
+        $this->entityManagerInterface->persist($newprofession);
+        $this->entityManagerInterface->flush();
+
+        $data->setProfession($newprofession);
+        $user->setProfession($newprofession);
+      }
     if ($uploadedFile) {
     //   $data->setAvatar($data->getAvatar());
       $data->setPhotoFile($uploadedFile);
