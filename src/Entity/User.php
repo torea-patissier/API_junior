@@ -115,6 +115,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(["item"])]
     #[ORM\Column(type: 'integer')]
     private $id;
 

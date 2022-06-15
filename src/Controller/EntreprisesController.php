@@ -29,7 +29,7 @@ class EntreprisesController extends AbstractController
 
     if ($email = $parameters->get('email')) {
       $data->setEmail($email);
-      $entreprises->setEmail($email);
+      $entreprises->setEmail('$email');
     }
     if ($name = $parameters->get('name')) {
       $data->setName($name);
@@ -43,9 +43,14 @@ class EntreprisesController extends AbstractController
         $data->setDescription($description);
         $entreprises->setDescription($description);
       }
-    if ($city = $parameters->get('city')) {
-        $data->setCity($city);
-        $entreprises->setCity($city);
+      if ($city = $parameters->get('city')) {
+        $newcity = new Cities();
+        $newcity->setName($city);
+        $this->entityManagerInterface->persist($newcity);
+        $this->entityManagerInterface->flush();
+
+        $data->setCity($newcity);
+        $entreprises->setCity($newcity);
       }
     if ($uploadedFile) {
       // $data->setAvatar($data->getAvatar());

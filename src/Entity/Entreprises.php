@@ -16,6 +16,11 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validation
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+/**
+ * @Vich\Uploadable
+ */
 
 #[ORM\Entity(repositoryClass: EntreprisesRepository::class)]
 #[UniqueEntity(
@@ -79,7 +84,7 @@ use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validat
                                     'description' => [
                                         'type' => 'string',
                                     ],
-                                    'addess' => [
+                                    'address' => [
                                         'type' => 'string',
                                     ],
                                     'city' => [
@@ -102,6 +107,16 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
+
+/**
+     * @Vich\UploadableField(mapping="entreprises_picture", fileNameProperty="photoFile")
+     * @var File
+     */
+    #[Assert\File(mimeTypes: ["image/png", "image/jpeg"], maxSize: '50M')]
+    private $photoFile;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $updatedAt;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Groups(["item"])]
@@ -154,6 +169,32 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getPhotoFile()
+    {
+        return $this->photoFile;
+    }
+
+    public function setPhotoFile($photoFile)
+    {
+        $this->photoFile = $photoFile;
+        if ($photoFile) {
+            $this->updatedAt = new \DateTime();
+        }
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
     public function getEmail(): ?string

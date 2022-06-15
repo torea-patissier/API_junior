@@ -31,7 +31,7 @@ class UserController extends AbstractController
 
     if ($email = $parameters->get('email')) {
       $data->setEmail($email);
-      $user->setEmail($email);
+      $user->setEmail('$email');
     }
     if ($firstname = $parameters->get('firstname')) {
       $data->setFirstname($firstname);
