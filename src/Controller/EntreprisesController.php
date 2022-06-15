@@ -21,10 +21,10 @@ class EntreprisesController extends AbstractController
   {
     $uploadedFile = $request->files->get('photoFile');
     $parameters = $request->request;
-    $entreprises = $this->entreprisesRepository->find($data->getId());
-
 
     /** @var Entreprises */
+    $entreprises = $this->entreprisesRepository->find($data->getId());
+
     
 
     if ($email = $parameters->get('email')) {

@@ -23,15 +23,14 @@ class UserController extends AbstractController
   {
     $uploadedFile = $request->files->get('photoFile');
     $parameters = $request->request;
+    
+    /** @var User */
     $user = $this->userRepository->find($data->getId());
 
-
-    /** @var User */
     
-
     if ($email = $parameters->get('email')) {
       $data->setEmail($email);
-      $user->setEmail('$email');
+      $user->setEmail($email);
     }
     if ($firstname = $parameters->get('firstname')) {
       $data->setFirstname($firstname);
