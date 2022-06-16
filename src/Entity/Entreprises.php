@@ -118,6 +118,9 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $updatedAt;
 
+    #[Groups(["item"])]
+    private $JwtToken;
+
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Groups(["item"])]
     #[Assert\Email(
@@ -169,6 +172,18 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getJwtToken(): ?string
+    {
+        return $this->JwtToken;
+    }
+
+    public function setJwtToken(string $jwt): self
+    {
+        $this->JwtToken = $jwt;
+
+        return $this;
     }
 
     public function getPhotoFile()
