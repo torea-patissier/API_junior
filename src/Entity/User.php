@@ -21,7 +21,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * @Vich\Uploadable
  */
-
+#[Vich\Uploadable] 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(
     'email',
@@ -128,6 +128,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Vich\UploadableField(mapping="user_picture", fileNameProperty="photoFile")
      * @var File
      */
+    #[Vich\Uploadable] 
     #[Assert\File(mimeTypes: ["image/png", "image/jpeg"], maxSize: '50M')]
     private $photoFile;
 
