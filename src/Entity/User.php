@@ -14,14 +14,12 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validation
 use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et choisir les données
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
+// use Vich\UploaderBundle\Mapping\Annotation as Vich;
 // use Vich\UploaderBundle as Vich;
 
 
-/**
- * @Vich\Uploadable
- */
-#[Vich\Uploadable] 
+
+// #[Vich\Uploadable] 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(
     'email',
@@ -128,7 +126,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Vich\UploadableField(mapping="user_picture", fileNameProperty="photoFile")
      * @var File
      */
-    #[Vich\Uploadable] 
+    // #[Vich\Uploadable] 
     #[Assert\File(mimeTypes: ["image/png", "image/jpeg"], maxSize: '50M')]
     private $photoFile;
 
