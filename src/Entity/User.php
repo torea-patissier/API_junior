@@ -46,17 +46,21 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'controller' => RegisterController::class,
             'validation_groups' => ['register'],
             'read' => false
+        ], 
+        'get' => [
+            'security' => 'is_granted("ROLE_ENTREPRISE")',
+
         ]
 
         
     ],
     itemOperations: [
-        'get' => [
-            'controller' => NotFoundAction::class,
-            'openapi_context' => ['summary' => 'Retrieves a Offers resource.'],
-            'read' => false,
-            'output' => false
-        ],
+        // 'get' => [
+        //     'controller' => NotFoundAction::class,
+        //     'openapi_context' => ['summary' => 'Retrieves a Offers resource.'],
+        //     'read' => false,
+        //     'output' => false
+        // ],
         'put' => [
             'method' => 'POST',
             'controller' => UserController::class,
@@ -108,7 +112,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                 ],
             ],
         ],
-         'patch', 'delete'
+         'get', 'patch', 'delete'
     ],
     normalizationContext: ['groups' => ['item']])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

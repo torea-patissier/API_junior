@@ -47,17 +47,21 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'controller' => RegisterController::class,
             'validation_groups' => ['register'],
             'read' => false
+        ], 'get' => [
+            'security' => 'is_granted("ROLE_USER")',
+            // 'openapi_context' => ['summary' => 'All entreprises.'],
+
         ]
 
         
     ],
     itemOperations: [
-        'get' => [
-            'controller' => NotFoundAction::class,
-            'openapi_context' => ['summary' => 'Retrieves a Offers resource.'],
-            'read' => false,
-            'output' => false
-        ],
+        // 'get' => [
+        //     'controller' => NotFoundAction::class,
+        //     'openapi_context' => ['summary' => 'Retrieves a Offers resource.'],
+        //     'read' => false,
+        //     'output' => false
+        // ],
         'put' => [
             'method' => 'POST',
             'controller' => EntreprisesController::class,
@@ -96,7 +100,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                     ],
                 ],
             ],
-        ], 'patch', 'delete'
+        ], 'get','patch', 'delete'
         
         
     ],
@@ -106,6 +110,7 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["item"])]
     private $id;
 
 /**
@@ -113,6 +118,7 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
      * @var File
      */
     #[Assert\File(mimeTypes: ["image/png", "image/jpeg"], maxSize: '50M')]
+    #[Groups(["item"])]
     private $photoFile;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
