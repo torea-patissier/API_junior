@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
-use Vich\UploaderBundle\Storage\StorageInterface;
+// use Vich\UploaderBundle\Storage\StorageInterface;
 use Symfony\Component\Security\Core\Security;
 
 final class UserPictureSerializer implements ContextAwareNormalizerInterface, NormalizerAwareInterface
@@ -16,9 +16,9 @@ final class UserPictureSerializer implements ContextAwareNormalizerInterface, No
 
   private const ALREADY_CALLED = 'USER_PICTURE_NORMALIZER_ALREADY_CALLED';
 
-  public function __construct(private StorageInterface $storage, private EntityManagerInterface $em)
-  {
-  }
+  // public function __construct(private StorageInterface $storage, private EntityManagerInterface $em)
+  // {
+  // }
 
   public function normalize($object, ?string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
   {
