@@ -14,8 +14,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validation
 use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et choisir les données
-// use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Vich\UploaderBundle as Vich;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+// use Vich\UploaderBundle as Vich;
 
 
 /**
