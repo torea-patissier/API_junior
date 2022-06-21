@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,7 +17,30 @@ use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et 
     'email',
     message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
 )]
-#[ApiResource(normalizationContext: ['groups' => ['item']])]
+#[ApiResource(
+    // collectionOperations: [
+    //     'get' => ['method' => 'get'],
+    // ],
+    collectionOperations: [
+        'me' => [
+            'pagination_enabled' => false,
+            'path' => '/me',
+            'method' => 'get',
+            'controller' => MeController::class,
+            'read' => false,
+        ]
+    ],
+    itemOperations:[
+        'get' => [
+            'controller' => NotFoundAction::class,
+            'openapi_context' => ['summary' => 'hidden'],
+            'read' => false,
+            'output' => false,
+        ]
+        ],
+    normalizationContext: ['groups' => ['item','user']]
+    )]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -25,12 +49,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Groups(["item"])]
+    #[Groups(["item",'user'])]
     #[Assert\Email(
         message: 'L\'email {{ value }} n\'est pas valide.', // A enlever si site en anglais
     )]
     private $email;
 
+    #[Groups(["item",'user'])]
     #[ORM\Column(type: 'json', nullable:true)]
     private $roles = [];
 
@@ -42,42 +67,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["item"])]
+    #[Groups(["item",'user'])]
     private $firstname;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["item"])]
+    #[Groups(["item",'user'])]
     private $lastname;
 
     #[ORM\Column(type: 'string', length: 255, nullable:true)]
-    #[Groups(["item"])]
+    #[Groups(["item",'user'])]
     private $telephone;
 
     #[ORM\Column(type: 'string', length: 255, nullable:true)]
-    #[Groups(["item"])]
+    #[Groups(["item",'user'])]
     private $description;
 
     #[ORM\Column(type: 'string', length: 255, nullable:true)]
-    #[Groups(["item"])]
+    #[Groups(["item",'user'])]
     private $avatar;
 
     #[ORM\Column(type: 'string', length: 255, nullable:true)]
-    #[Groups(["item"])]
+    #[Groups(["item",'user'])]
     private $year_of_experience;
 
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(["item"])]
+    #[Groups(["item",'user'])]
     private $city;
 
     #[ORM\ManyToOne(targetEntity: Profession::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(["item"])]
+    #[Groups(["item",'user'])]
     private $profession;
 
     #[ORM\ManyToOne(targetEntity: Diplomas::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(["item"])]
+    #[Groups(["item",'user'])]
     private $diploma;
 
     public function getId(): ?int
