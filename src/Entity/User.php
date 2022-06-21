@@ -130,7 +130,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Groups(["item"])]
     #[Assert\Email(
-        message: 'L\'email {{ value }} n\'est pas valide.', // A enlever si site en anglais
+        message: 'L\'email {{ value }} n\'est pas valide.', // A enlever si le site est  en anglais
     )]
     private $email;
 
