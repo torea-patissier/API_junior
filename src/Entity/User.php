@@ -20,7 +20,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * @Vich\Uploadable
  */
-
+#[Vich\Uploadable] 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(
     'email',
@@ -123,10 +123,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private $id;
 
-/**
+    /**
      * @Vich\UploadableField(mapping="user_picture", fileNameProperty="photoFile")
      * @var File
      */
+    #[Vich\UploadableField(mapping: 'product_image', fileNameProperty: 'imageName', size: 'imageSize')]
     #[Assert\File(mimeTypes: ["image/png", "image/jpeg"], maxSize: '50M')]
     private $photoFile;
 
@@ -135,7 +136,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(["item"])]
     private $JwtToken;
-
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Groups(["item"])]
