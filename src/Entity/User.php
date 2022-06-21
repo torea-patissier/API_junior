@@ -117,8 +117,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Assert\File(mimeTypes: ["image/png", "image/jpeg"], maxSize: '50M')]
-    private $photoFile;
+    // #[Assert\File(mimeTypes: ["image/png", "image/jpeg"], maxSize: '50M')]
+    // private $photoFile;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $updatedAt;
