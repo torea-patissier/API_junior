@@ -18,9 +18,6 @@ use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et 
     message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
 )]
 #[ApiResource(
-    // collectionOperations: [
-    //     'get' => ['method' => 'get'],
-    // ],
     collectionOperations: [
         'me' => [
             'pagination_enabled' => false,
@@ -30,15 +27,16 @@ use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et 
             'read' => false,
         ]
     ],
-    itemOperations:[
+erations:[
         'get' => [
             'controller' => NotFoundAction::class,
             'openapi_context' => ['summary' => 'hidden'],
             'read' => false,
             'output' => false,
         ]
-        ],
-    normalizationContext: ['groups' => ['item','user']]
+    ],
+    normalizationContext: ['groups' => ['read:User']]
+    // normalizationContext: ['groups' => ['read:User']]
     )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -49,13 +47,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Groups(["item",'user'])]
+    #[Groups(['read:User'])]
     #[Assert\Email(
         message: 'L\'email {{ value }} n\'est pas valide.', // A enlever si site en anglais
     )]
     private $email;
 
-    #[Groups(["item",'user'])]
+    #[Groups(['read:User'])]
     #[ORM\Column(type: 'json', nullable:true)]
     private $roles = [];
 
@@ -67,42 +65,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["item",'user'])]
+    #[Groups(['read:User'])]
     private $firstname;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["item",'user'])]
+    #[Groups(['read:User'])]
     private $lastname;
 
     #[ORM\Column(type: 'string', length: 255, nullable:true)]
-    #[Groups(["item",'user'])]
+    #[Groups(['read:User'])]
     private $telephone;
 
     #[ORM\Column(type: 'string', length: 255, nullable:true)]
-    #[Groups(["item",'user'])]
+    #[Groups(['read:User'])]
     private $description;
 
     #[ORM\Column(type: 'string', length: 255, nullable:true)]
-    #[Groups(["item",'user'])]
+    #[Groups(['read:User'])]
     private $avatar;
 
     #[ORM\Column(type: 'string', length: 255, nullable:true)]
-    #[Groups(["item",'user'])]
+    #[Groups(['read:User'])]
     private $year_of_experience;
 
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(["item",'user'])]
+    #[Groups(['read:User'])]
     private $city;
 
     #[ORM\ManyToOne(targetEntity: Profession::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(["item",'user'])]
+    #[Groups(['read:User'])]
     private $profession;
 
     #[ORM\ManyToOne(targetEntity: Diplomas::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(["item",'user'])]
+    #[Groups(['read:User'])]
     private $diploma;
 
     public function getId(): ?int
