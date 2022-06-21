@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use App\Controller\MeController;
 use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
