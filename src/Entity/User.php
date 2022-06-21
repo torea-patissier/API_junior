@@ -4,6 +4,7 @@ namespace App\Entity;
 use App\Controller\MeController;
 use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\RegisterController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -12,12 +13,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validation
 use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et choisir les données
 
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(
     'email',
     message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
 )]
 #[ApiResource(
+    // security: 'is_granted("ROLE_USER", object)',
     collectionOperations: [
         'me' => [
             'pagination_enabled' => false,
@@ -25,7 +28,16 @@ use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et 
             'method' => 'get',
             'controller' => MeController::class,
             'read' => false,
-        ]
+            
+        ],
+        'register' => [
+            'pagination_enabled' => false,
+            'path' => '/register_user', 
+            'method' => 'post',
+            'controller' => RegisterController::class,
+            'validation_groups' => ['register'],
+            'read' => false
+        ], 
     ],
     itemOperations:[
         'get' => [
@@ -36,7 +48,6 @@ use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et 
         ]
     ],
     normalizationContext: ['groups' => ['item','read:User']]
-    // normalizationContext: ['groups' => ['item','read:User']]
     )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface

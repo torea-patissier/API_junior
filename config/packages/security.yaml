@@ -55,7 +55,7 @@ security:
 
         - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
         - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }        
-        - { path: ^/api/users, method: POST, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register_user, method: POST, roles: PUBLIC_ACCESS }
         - { path: ^/api/entreprises, method: POST, roles: PUBLIC_ACCESS }
         - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
 
