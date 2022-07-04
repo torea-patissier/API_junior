@@ -131,8 +131,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\File(mimeTypes: ["image/png", "image/jpeg"], maxSize: '50M')]
     private $photoFile;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private $updatedAt;
+    // #[ORM\Column(type: 'datetime', nullable: true)]
+    // private $updatedAt;
 
     #[Groups(["item"])]
     private $JwtToken;
