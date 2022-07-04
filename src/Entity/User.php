@@ -27,16 +27,12 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
 )]
 #[ApiResource(
-    // security: 'is_granted("ROLE_USER")',
     collectionOperations: ['me' => [
         'pagination_enabled' => false,
         'path' => '/me', 
         'method' => 'get',
         'controller' => MeController::class,
         'read' => false,
-        // 'openapi_context' => [
-        //     'security' => [['bearerAuth' => []]]
-        // ],
         'security' => 'is_granted("ROLE_USER")'
         ], 
         'register' => [
