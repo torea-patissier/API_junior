@@ -130,8 +130,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\File(mimeTypes: ["image/png", "image/jpeg"], maxSize: '50M')]
     private $photoFile;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private $updatedAt;
+    // #[ORM\Column(type: 'datetime', nullable: true)]
+    // private $updatedAt;
 
     #[Groups(["item"])]
     private $JwtToken;
@@ -234,17 +234,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
+    // public function getUpdatedAt(): ?\DateTimeInterface
+    // {
+    //     return $this->updatedAt;
+    // }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
+    // public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    // {
+    //     $this->updatedAt = $updatedAt;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getEmail(): ?string
     {
