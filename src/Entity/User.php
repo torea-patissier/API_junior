@@ -21,7 +21,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * @Vich\Uploadable
  */
-
+#[Vich\Uploadable] 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(
     'email',
@@ -133,7 +133,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private $id;
 
-/**
+    /**
      * @Vich\UploadableField(mapping="user_picture", fileNameProperty="photoFile")
      * @var File
      */
@@ -141,12 +141,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["item"])]
     private $photoFile;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private $updatedAt;
+    // #[ORM\Column(type: 'datetime', nullable: true)]
+    // private $updatedAt;
 
     #[Groups(["item"])]
     private $JwtToken;
-
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Groups(["item"])]
