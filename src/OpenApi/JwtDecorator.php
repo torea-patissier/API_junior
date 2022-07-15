@@ -8,6 +8,7 @@ namespace App\OpenApi;
 use ApiPlatform\Core\OpenApi\Factory\OpenApiFactoryInterface;
 use ApiPlatform\Core\OpenApi\OpenApi;
 use ApiPlatform\Core\OpenApi\Model;
+use Symfony\Component\Security\Core\Role\Role;
 
 final class JwtDecorator implements OpenApiFactoryInterface
 {
@@ -54,7 +55,7 @@ final class JwtDecorator implements OpenApiFactoryInterface
                         'content' => [
                             'application/json' => [
                                 'schema' => [
-                                    '$ref' => '#/components/schemas/Token',
+                                    '$ref' => '#/components/schemas/Token'
                                 ],
                             ],
                         ],
@@ -74,6 +75,36 @@ final class JwtDecorator implements OpenApiFactoryInterface
             ),
         );
         $openApi->getPaths()->addPath('/authentication_token', $pathItem);
+
+         $pathItem = new Model\PathItem(
+            post: new Model\Operation(
+                operationId: 'postApiLogin',
+                tags: ['Auth'],
+                requestBody: new Model\RequestBody(
+                    content: new \ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/Credentials'
+                            ]
+                        ]
+                    ])
+
+                ),
+                responses: [
+                    '200' => [
+                        'description' => 'Utilisateur connecté',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/User-read.User'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            )
+        );
+        $openApi->getPaths()->addPath('/api/login', $pathItem);
 
         return $openApi;
     }

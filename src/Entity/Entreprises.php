@@ -29,7 +29,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 )]
 #[ApiResource(
     // security: 'is_granted("ROLE_ENTREPRISE")',
-    collectionOperations: ['me' => [
+    collectionOperations: [
+        'me' => [
         'pagination_enabled' => false,
         'path' => '/my', 
         'method' => 'get',
@@ -47,7 +48,16 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'controller' => RegisterController::class,
             'validation_groups' => ['register'],
             'read' => false
-        ], 'get' => [
+        ], 
+        // 'login' => [
+        //     'pagination_enabled' => false,
+        //     'path' => '/login_user', 
+        //     'method' => 'post',
+        //     'controller' => LoginController::class,
+        //     'validation_groups' => ['login'],
+        //     'read' => false
+        // ], 
+        'get' => [
             'security' => 'is_granted("ROLE_USER")',
             // 'openapi_context' => ['summary' => 'All entreprises.'],
 
@@ -117,7 +127,7 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
      * @Vich\UploadableField(mapping="entreprises_picture", fileNameProperty="photoFile")
      * @var File
      */
-    #[Assert\File(mimeTypes: ["image/png", "image/jpeg"], maxSize: '50M')]
+    #[Assert\File(mimeTypes: ["image/*"], maxSize: '50M')]
     #[Groups(["item"])]
     private $photoFile;
 
@@ -135,6 +145,7 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     private $email;
 
     #[ORM\Column(type: 'json')]
+    #[Groups(["item"])]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]

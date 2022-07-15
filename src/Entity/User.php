@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\LoginController;
 use App\Controller\MeController;
 use App\Controller\RegisterController;
 use App\Controller\UserController;
@@ -28,7 +29,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 )]
 #[ApiResource(
     // security: 'is_granted("ROLE_USER")',
-    collectionOperations: ['me' => [
+    collectionOperations: [
+        'me' => [
         'pagination_enabled' => false,
         'path' => '/me', 
         'method' => 'get',
@@ -47,6 +49,14 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'validation_groups' => ['register'],
             'read' => false
         ], 
+        // 'login' => [
+        //     'pagination_enabled' => false,
+        //     'path' => '/login_user', 
+        //     'method' => 'post',
+        //     'controller' => LoginController::class,
+        //     'validation_groups' => ['register'],
+        //     'read' => false
+        // ], 
         'get' => [
             'security' => 'is_granted("ROLE_ENTREPRISE")',
 
@@ -127,7 +137,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Vich\UploadableField(mapping="user_picture", fileNameProperty="photoFile")
      * @var File
      */
-    #[Assert\File(mimeTypes: ["image/png", "image/jpeg"], maxSize: '50M')]
+    #[Assert\File(mimeTypes: ["image/*"], maxSize: '50M')]
+    #[Groups(["item"])]
     private $photoFile;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
@@ -145,6 +156,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $email;
 
     #[ORM\Column(type: 'json')]
+    #[Groups(["item"])]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
