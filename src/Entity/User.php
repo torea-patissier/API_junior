@@ -106,6 +106,21 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                                     'year_of_experience' => [
                                         'type' => 'string',
                                     ],
+
+                                    // Si récupération de l'id des entités liées
+
+                                    // 'diplomas' => [
+                                    //     'type' => 'string',
+                                    // ],
+                                    // 'cities' => [
+                                    //     'type' => 'string',
+                                    // ],
+                                    // 'profession' => [
+                                    //     'type' => 'string',
+                                    // ],
+
+                                    // Si création de nouvelles entrées en BDD
+
                                     'diploma' => [
                                         'type' => 'string',
                                     ],

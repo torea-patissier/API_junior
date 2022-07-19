@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Controller\OffersController;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\OffersRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,9 +10,131 @@ use ApiPlatform\Core\Annotation\ApiFilter; // Filtre
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\TermFilter; // Filtre de termes
 use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validation
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+/**
+ * @Vich\Uploadable
+ */
 
 #[ORM\Entity(repositoryClass: OffersRepository::class)]
 #[ApiResource(
+    collectionOperations: [
+        'get',
+        'offers' => [
+            'pagination_enabled' => false,
+            'path' => 'create_offer',
+            'method' => 'post',
+            'controller' => OffersController::class,
+            'read' => false,
+            'deserialize' => false,
+            // 'validation_groups' => ['user:update:validate', 'user:update:validate-password'],
+            // 'denormalization_context' => ['groups' => ['offers:update']],
+            'openapi_context' => [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'photoFile' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                    'jobs' => [
+                                        'type' => 'string',
+                                    ],
+                                    'description' => [
+                                        'type' => 'string',
+                                    ],
+                                    'type_of_contract' => [
+                                        'type' => 'string',
+                                    ],
+                                    'type_of_work' => [
+                                        'type' => 'string',
+                                    ],
+
+                                    // Si Récupération de l'ID des entités liées
+
+                                    // 'cites' => [
+                                    //     'type' => 'string',
+                                    // ],
+                                    // 'diplomas' => [
+                                    //     'type' => 'string',
+                                    // ],
+                                    
+
+                                    // Si Création de nouvelles entrées en BDD
+
+                                    'city' => [
+                                        'type' => 'string',
+                                    ],
+                                    'diploma' => [
+                                        'type' => 'string',
+                                    ],
+                                    
+                                    'entreprises' => [
+                                        'type' => 'string',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+    itemOperations: [
+        'get' => [
+            'normalization_context' => ['groups' => ['item:offers']]
+        ],
+        // 'put' => [
+        //     'method' => 'POST',
+        //     'controller' => OffersController::class,
+        //     'deserialize' => false,
+        //     // 'validation_groups' => ['user:update:validate', 'user:update:validate-password'],
+        //     'denormalization_context' => ['groups' => ['offers:update']],
+        //     'openapi_context' => [
+        //         'requestBody' => [
+        //             'content' => [
+        //                 'multipart/form-data' => [
+        //                     'schema' => [
+        //                         'type' => 'object',
+        //                         'properties' => [
+        //                             'photoFile' => [
+        //                                 'type' => 'string',
+        //                                 'format' => 'binary',
+        //                             ],
+        //                             'jobs' => [
+        //                                 'type' => 'string',
+        //                             ],
+        //                             'type_of_contract' => [
+        //                                 'type' => 'string',
+        //                             ],
+        //                             'type_of_work' => [
+        //                                 'type' => 'string',
+        //                             ],
+        //                             'city' => [
+        //                                 'type' => 'string',
+        //                             ],
+        //                             'diploma' => [
+        //                                 'type' => 'string',
+        //                             ],
+        //                             'entreprise' => [
+        //                                 'type' => 'string',
+        //                             ],
+        //                         ],
+        //                     ],
+        //                 ],
+        //             ],
+        //         ],
+        //     ],
+        // ],
+        'delete',
+        'patch',
+        'get'
+    ],
     paginationItemsPerPage: 10 // Pagination, items par page
 )]
 // #[ApiFilter(OrderFilter::class, properties: ['id' => 'ASC', 'description' => 'DESC'])]
@@ -21,7 +144,18 @@ class Offers
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["item"])]
+
     private $id;
+
+
+    /**
+     * @Vich\UploadableField(mapping="offers_picture", fileNameProperty="photoFile")
+     * @var File
+     */
+    #[Assert\File(mimeTypes: ["image/*"], maxSize: '50M')]
+    private $photoFile;
+
 
     #[ORM\Column(type: 'string', length: 255)]
     private $jobs;
@@ -46,26 +180,43 @@ class Offers
 
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'offers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["item:offers"])]
     private $city;
 
     #[ORM\ManyToOne(targetEntity: Diplomas::class, inversedBy: 'offers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["item:offers"])]
     private $diploma;
 
     #[ORM\ManyToOne(targetEntity: Entreprises::class, inversedBy: 'offers')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'cascade')] // DELETE ON CASCADE
+    #[Groups(["item:offers"])]
     private $entreprise;
 
-    public function __construct() {
+    public function __construct()
+    {
 
         $this->publication_date = new \DateTime();
         $this->expiration_date = new \Datetime();
-
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getPhotoFile()
+    {
+        return $this->photoFile;
+    }
+
+    public function setPhotoFile($photoFile)
+    {
+        $this->photoFile = $photoFile;
+        if ($photoFile) {
+            $this->updatedAt = new \DateTime();
+        }
+        return $this;
     }
 
     public function getJobs(): ?string

@@ -6,6 +6,7 @@
 parameters:
     app.path.user_picture: public/uploads/images/user
     app.path.entreprises_picture: public/uploads/images/entreprises
+    app.path.offers_picture: public/uploads/images/offers
 
 services:
     # default configuration for services in *this* file
@@ -27,7 +28,8 @@ services:
         # tags: ['doctrine.fixture.orm']   
     App\Controller\:
         resource: "../src/Controller"
-        tags: ['controller.service_arguments']                    
+        tags: ['controller.service_arguments'] 
+                          
 
     App\OpenApi\JwtDecorator:
         decorates: 'api_platform.openapi.factory'

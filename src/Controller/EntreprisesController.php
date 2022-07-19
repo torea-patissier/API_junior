@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Entreprises;
 use App\Entity\Cities;
+use App\Repository\CitiesRepository;
 use App\Repository\EntreprisesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +14,7 @@ use Symfony\Component\Security\Core\Security;
 
 class EntreprisesController extends AbstractController
 {
-  public function __construct(private Security $security, private EntityManagerInterface $entityManagerInterface, private EntreprisesRepository $entreprisesRepository)
+  public function __construct(private Security $security, private EntityManagerInterface $entityManagerInterface, private EntreprisesRepository $entreprisesRepository, private CitiesRepository $citiesRepository)
   {
   }
 
@@ -43,6 +44,16 @@ class EntreprisesController extends AbstractController
         $data->setDescription($description);
         $entreprises->setDescription($description);
       }
+
+      // // Récupere l'id dans la table Cities
+
+      // if ($citiesId = $parameters->get('cities')) {
+      //   $citiesRepository = $this->entityManagerInterface->getRepository(Cities::class);
+      //   $data->setCity($citiesRepository->find($citiesId));
+      // }
+
+      // Créer une nouvelle Ville en BDD
+
       if ($city = $parameters->get('city')) {
         $newcity = new Cities();
         $newcity->setName($city);
@@ -52,6 +63,7 @@ class EntreprisesController extends AbstractController
         $data->setCity($newcity);
         $entreprises->setCity($newcity);
       }
+
     if ($uploadedFile) {
       // $data->setAvatar($data->getAvatar());
       $data->setPhotoFile($uploadedFile);

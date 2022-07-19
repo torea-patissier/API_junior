@@ -101,6 +101,15 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                                     'address' => [
                                         'type' => 'string',
                                     ],
+
+                                    // Si récupération de l'ID entity Cities
+
+                                    // 'cities' => [
+                                    //     'type' => 'string',
+                                    // ],
+
+                                    // Si création d'une nouvelle entrée dans la table Cities
+
                                     'city' => [
                                         'type' => 'string',
                                     ],
@@ -110,7 +119,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                     ],
                 ],
             ],
-        ], 'get','patch', 'delete'
+        ], 'get'
+        ,'patch', 'delete'
         
         
     ],
@@ -162,7 +172,8 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     private $city;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["item"])]
+    #[Groups(["item", "item:offers"])]
+    
     private $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
