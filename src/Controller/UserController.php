@@ -27,7 +27,6 @@ class UserController extends AbstractController
     /** @var User */
     $user = $this->userRepository->find($data->getId());
 
-    
     if ($email = $parameters->get('email')) {
       $data->setEmail($email);
       $user->setEmail($email);

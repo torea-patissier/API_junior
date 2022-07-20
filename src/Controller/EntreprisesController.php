@@ -25,8 +25,6 @@ class EntreprisesController extends AbstractController
     /** @var Entreprises */
     $entreprises = $this->entreprisesRepository->find($data->getId());
 
-    
-
     if ($email = $parameters->get('email')) {
       $data->setEmail($email);
       $entreprises->setEmail('$email');

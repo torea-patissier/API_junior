@@ -11,8 +11,6 @@ use Symfony\Component\Security\Core\Security;
 
 class RegisterController extends AbstractController
 {
-
-
     public function __invoke( $data, JWTEncoderInterface $token)
     {
        $data->setJwtToken($token->encode(["roles" => $data->getRoles(), "username" => $data->getEmail()]));
