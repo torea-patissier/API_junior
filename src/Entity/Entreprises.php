@@ -2,7 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\EntreprisesController;
+use App\Controller\MeController;
+use App\Controller\RegisterController;
 use App\Repository\EntreprisesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,19 +16,136 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validation
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+/**
+ * @Vich\Uploadable
+ */
 
 #[ORM\Entity(repositoryClass: EntreprisesRepository::class)]
 #[UniqueEntity(
     'email',
     message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
 )]
-#[ApiResource(normalizationContext: ['groups' => ['item']])]
+#[ApiResource(
+    // security: 'is_granted("ROLE_ENTREPRISE")',
+    collectionOperations: [
+        'me' => [
+        'pagination_enabled' => false,
+        'path' => '/my', 
+        'method' => 'get',
+        'controller' => MeController::class,
+        'read' => false,
+        // 'openapi_context' => [
+        //     'security' => [['bearerAuth' => []]]
+        // ],
+        'security' => 'is_granted("ROLE_ENTREPRISE")'
+        ], 
+        'register' => [
+            'pagination_enabled' => false,
+            'path' => '/register_company', 
+            'method' => 'post',
+            'controller' => RegisterController::class,
+            'validation_groups' => ['register'],
+            'read' => false
+        ], 
+        // 'login' => [
+        //     'pagination_enabled' => false,
+        //     'path' => '/login_user', 
+        //     'method' => 'post',
+        //     'controller' => LoginController::class,
+        //     'validation_groups' => ['login'],
+        //     'read' => false
+        // ], 
+        'get' => [
+            'security' => 'is_granted("ROLE_USER")',
+            // 'openapi_context' => ['summary' => 'All entreprises.'],
+
+        ]
+
+        
+    ],
+    itemOperations: [
+        // 'get' => [
+        //     'controller' => NotFoundAction::class,
+        //     'openapi_context' => ['summary' => 'Retrieves a Offers resource.'],
+        //     'read' => false,
+        //     'output' => false
+        // ],
+        'put' => [
+            'method' => 'POST',
+            'controller' => EntreprisesController::class,
+            'deserialize' => false,
+            // 'validation_groups' => ['user:update:validate', 'user:update:validate-password'],
+            'denormalization_context' => ['groups' => ['entreprises:update']],
+            'openapi_context' => [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'photoFile' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                    // 'email' => [
+                                    //     'type' => 'string',
+                                    // ],
+                                    'name' => [
+                                        'type' => 'string',
+                                    ],
+                                    'description' => [
+                                        'type' => 'string',
+                                    ],
+                                    'address' => [
+                                        'type' => 'string',
+                                    ],
+
+                                    // Si récupération de l'ID entity Cities
+
+                                    // 'cities' => [
+                                    //     'type' => 'string',
+                                    // ],
+
+                                    // Si création d'une nouvelle entrée dans la table Cities
+
+                                    'city' => [
+                                        'type' => 'string',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], 'get'
+        ,'patch', 'delete'
+        
+        
+    ],
+    normalizationContext: ['groups' => ['item']])]
 class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["item"])]
     private $id;
+
+/**
+     * @Vich\UploadableField(mapping="entreprises_picture", fileNameProperty="photoFile")
+     * @var File
+     */
+    #[Assert\File(mimeTypes: ["image/*"], maxSize: '50M')]
+    #[Groups(["item"])]
+    private $photoFile;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $updatedAt;
+
+    #[Groups(["item"])]
+    private $JwtToken;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Groups(["item"])]
@@ -34,12 +155,14 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     private $email;
 
     #[ORM\Column(type: 'json')]
+    #[Groups(["item"])]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
     #[Assert\Regex(
         '/^\w{8,}$/',
-        message: "Le mot de passe de faire au minimum 8 caractères et ne contenir que des chiffres et des lettres (_ et - autorisé)"
+        message: "Le mot de passe de faire au minimum 8 caractères et ne contenir que des chiffres et des lettres (_ et - autorisé)",
+        groups:["register"]
     )]//REGEX du mot de passe
     private $password;
 
@@ -49,7 +172,8 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     private $city;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["item"])]
+    #[Groups(["item", "item:offers"])]
+    
     private $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -76,6 +200,44 @@ class Entreprises implements UserInterface, PasswordAuthenticatedUserInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getJwtToken(): ?string
+    {
+        return $this->JwtToken;
+    }
+
+    public function setJwtToken(string $jwt): self
+    {
+        $this->JwtToken = $jwt;
+
+        return $this;
+    }
+
+    public function getPhotoFile()
+    {
+        return $this->photoFile;
+    }
+
+    public function setPhotoFile($photoFile)
+    {
+        $this->photoFile = $photoFile;
+        if ($photoFile) {
+            $this->updatedAt = new \DateTime();
+        }
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
     public function getEmail(): ?string

@@ -18,7 +18,7 @@ class Cities
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['item'])] 
+    #[Groups(['item', 'item:offers'])] 
     private $name; 
 
 

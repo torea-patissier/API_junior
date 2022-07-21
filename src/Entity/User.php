@@ -2,7 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\LoginController;
+use App\Controller\MeController;
+use App\Controller\RegisterController;
+use App\Controller\UserController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -10,19 +15,153 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert; // Contraintes de validation
 use Symfony\Component\Serializer\Annotation\Groups; // Pour la serialization et choisir les données
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+
+/**
+ * @Vich\Uploadable
+ */
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(
     'email',
     message: 'L\'adresse {{ value }} est déjà utilisé' // A enlever si site en anglais
 )]
-#[ApiResource(normalizationContext: ['groups' => ['item']])]
+#[ApiResource(
+    // security: 'is_granted("ROLE_USER")',
+    collectionOperations: [
+        'me' => [
+        'pagination_enabled' => false,
+        'path' => '/me', 
+        'method' => 'get',
+        'controller' => MeController::class,
+        'read' => false,
+        // 'openapi_context' => [
+        //     'security' => [['bearerAuth' => []]]
+        // ],
+        'security' => 'is_granted("ROLE_USER")'
+        ], 
+        'register' => [
+            'pagination_enabled' => false,
+            'path' => '/register_user', 
+            'method' => 'post',
+            'controller' => RegisterController::class,
+            'validation_groups' => ['register'],
+            'read' => false
+        ], 
+        // 'login' => [
+        //     'pagination_enabled' => false,
+        //     'path' => '/login_user', 
+        //     'method' => 'post',
+        //     'controller' => LoginController::class,
+        //     'validation_groups' => ['register'],
+        //     'read' => false
+        // ], 
+        'get' => [
+            'security' => 'is_granted("ROLE_ENTREPRISE")',
+
+        ]
+
+        
+    ],
+    itemOperations: [
+        // 'get' => [
+        //     'controller' => NotFoundAction::class,
+        //     'openapi_context' => ['summary' => 'Retrieves a Offers resource.'],
+        //     'read' => false,
+        //     'output' => false
+        // ],
+        'put' => [
+            'method' => 'POST',
+            'controller' => UserController::class,
+            'deserialize' => false,
+            // 'validation_groups' => ['user:update:validate', 'user:update:validate-password'],
+            'denormalization_context' => ['groups' => ['user:update']],
+            'openapi_context' => [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'photoFile' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                    // 'email' => [
+                                    //     'type' => 'string',
+                                    // ],
+                                    'firstname' => [
+                                        'type' => 'string',
+                                    ],
+                                    'lastname' => [
+                                        'type' => 'string',
+                                    ],
+                                    'telephone' => [
+                                        'type' => 'string',
+                                    ],
+                                    'description' => [
+                                        'type' => 'string',
+                                    ],
+                                    'year_of_experience' => [
+                                        'type' => 'string',
+                                    ],
+
+                                    // Si récupération de l'id des entités liées
+
+                                    // 'diplomas' => [
+                                    //     'type' => 'string',
+                                    // ],
+                                    // 'cities' => [
+                                    //     'type' => 'string',
+                                    // ],
+                                    // 'profession' => [
+                                    //     'type' => 'string',
+                                    // ],
+
+                                    // Si création de nouvelles entrées en BDD
+
+                                    'diploma' => [
+                                        'type' => 'string',
+                                    ],
+                                    'city' => [
+                                        'type' => 'string',
+                                    ],
+                                    'profession' => [
+                                        'type' => 'string',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+         'get', 'patch', 'delete'
+    ],
+    normalizationContext: ['groups' => ['item']])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(["item"])]
     #[ORM\Column(type: 'integer')]
     private $id;
+
+/**
+     * @Vich\UploadableField(mapping="user_picture", fileNameProperty="photoFile")
+     * @var File
+     */
+    #[Assert\File(mimeTypes: ["image/*"], maxSize: '50M')]
+    #[Groups(["item"])]
+    private $photoFile;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $updatedAt;
+
+    #[Groups(["item"])]
+    private $JwtToken;
+
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Groups(["item"])]
@@ -32,57 +171,106 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $email;
 
     #[ORM\Column(type: 'json')]
+    #[Groups(["item"])]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
     #[Assert\Regex(
         '/^\w{8,}$/',
-        message: "Le mot de passe de faire au minimum 8 caractères et ne contenir que des chiffres et des lettres (_ et - autorisé)"
+        message: "Le mot de passe de faire au minimum 8 caractères et ne contenir que des chiffres et des lettres (_ et - autorisé)",
+        groups:["register"]
     )]//REGEX du mot de passe
     private $password;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["item"])]
+    #[Groups(["item",'user:update' ])]
+    
     private $firstname;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["item"])]
+    #[Groups(["item", 'user:update'])]
+    
     private $lastname;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["item"])]
+    #[Groups(["item", 'user:update'])]
+    
     private $telephone;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["item"])]
+    #[Groups(["item", 'user:update'])]
+    
     private $description;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["item"])]
+    #[Groups(["item", 'user:update'])]
+    
     private $avatar;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["item"])]
+    #[Groups(["item", 'user:update'])]
+    
     private $year_of_experience;
 
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(["item"])]
+    #[Groups(["item", 'user:update'])]
+    
     private $city;
 
     #[ORM\ManyToOne(targetEntity: Profession::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(["item"])]
+    #[Groups(["item", 'user:update'])]
+    
     private $profession;
 
     #[ORM\ManyToOne(targetEntity: Diplomas::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(["item"])]
+    #[Groups(["item", 'user:update'])]
+    
     private $diploma;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getJwtToken(): ?string
+    {
+        return $this->JwtToken;
+    }
+
+    public function setJwtToken(string $jwt): self
+    {
+        $this->JwtToken = $jwt;
+
+        return $this;
+    }
+
+    public function getPhotoFile()
+    {
+        return $this->photoFile;
+    }
+
+    public function setPhotoFile($photoFile)
+    {
+        $this->photoFile = $photoFile;
+        if ($photoFile) {
+            $this->updatedAt = new \DateTime();
+        }
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -160,6 +348,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->firstname;
     }
+
 
     public function setFirstname(string $firstname): self
     {

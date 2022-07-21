@@ -19,7 +19,7 @@ class Diplomas
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['item'])] 
+    #[Groups(["item:offers"])]
     private $name;
 
     #[ORM\OneToMany(mappedBy: 'diploma', targetEntity: Offers::class)]

@@ -4,6 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.path.user_picture: public/uploads/images/user
+    app.path.entreprises_picture: public/uploads/images/entreprises
+    app.path.offers_picture: public/uploads/images/offers
 
 services:
     # default configuration for services in *this* file
@@ -20,9 +23,14 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
-            - '../src/Controller'  # SUPPRIMER SI BESOIN
+            # - '../src/Controller'  # SUPPRIMER SI BESOIN
         #     - '../src/DataFixtures/AppFixtures'
-        # tags: ['doctrine.fixture.orm']    
+        # tags: ['doctrine.fixture.orm']   
+    App\Controller\:
+        resource: "../src/Controller"
+        tags: ['controller.service_arguments'] 
+                          
+
     App\OpenApi\JwtDecorator:
         decorates: 'api_platform.openapi.factory'
         arguments: ['@.inner']                 

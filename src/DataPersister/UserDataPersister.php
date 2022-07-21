@@ -7,12 +7,12 @@ use App\Entity\Entreprises;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
+use Symfony\Component\Security\Core\Security;
 
 class UserDataPersister implements DataPersisterInterface
 {
 
-    public function __construct(private EntityManagerInterface $entityManager, private UserPasswordHasherInterface $userPasswordEncoderInterface)
+    public function __construct(private EntityManagerInterface $entityManager, private UserPasswordHasherInterface $userPasswordEncoderInterface, private Security $security)
     {
     }
 
@@ -36,7 +36,7 @@ class UserDataPersister implements DataPersisterInterface
      */
     public function persist($data)
     {
-        if ($data->getPassword()) {
+        if ($data->getPassword() && !($this->security->getUser() && $this->security->getUser()->getPassword())) {
             $data->setPassword(
                 $this->userPasswordEncoderInterface->hashPassword($data, $data->getPassword())
             );
