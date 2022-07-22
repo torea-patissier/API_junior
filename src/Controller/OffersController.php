@@ -30,11 +30,11 @@ class OffersController extends AbstractController
     /** @var Offers */
     // $offers = $this->offersRepository->find($data->getId());
     
-    $offers = New Offers();
+    $offers = new Offers();
 
-    $offers->setPhotoFile($uploadedFile);
-    $offers->setImage('test');
-    $offers->setImage($offers->getPhotoFile());
+    // $offers->setPhotoFile($uploadedFile);
+    // $offers->setImage($offers->getPhotoFile());
+    // $offers->setImage($offers->getPhotoFile());
     
 
     
@@ -135,6 +135,7 @@ class OffersController extends AbstractController
 
     if ($uploadedFile) {
       $offers->setPhotoFile($uploadedFile);
+      $offers->setImage($offers->getPhotoFile());
     }
     $this->entityManagerInterface->persist($offers);
     $this->entityManagerInterface->flush();

@@ -29,6 +29,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'controller' => OffersController::class,
             'read' => false,
             'deserialize' => false,
+            //'security' => 'is_granted("ROLE_ENTREPRISE")',
             // 'validation_groups' => ['user:update:validate', 'user:update:validate-password'],
             // 'denormalization_context' => ['groups' => ['offers:update']],
             'openapi_context' => [

@@ -3,18 +3,21 @@ vich_uploader:
 
     mappings:
         user_picture:
+            uri_prefix: ''
             upload_destination: "%app.path.user_picture%"
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
             inject_on_load: false
             delete_on_remove: false
             delete_on_update: false
         entreprises_picture:
+            uri_prefix: ''
             upload_destination: "%app.path.entreprises_picture%"
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
             inject_on_load: false
             delete_on_remove: false
             delete_on_update: false
         offers_picture:
+            uri_prefix: ''
             upload_destination: "%app.path.offers_picture%"
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
             inject_on_load: false
