@@ -29,6 +29,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 )]
 #[ApiResource(
     // security: 'is_granted("ROLE_USER")',
+    paginationEnabled:false,
     collectionOperations: [
         'me' => [
         'pagination_enabled' => false,

@@ -19,7 +19,7 @@ class Profession
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["item:offers"])]
+    #[Groups(["item", "item:offers"])]
     private $name;
 
     #[ORM\OneToMany(mappedBy: 'profession', targetEntity: User::class)]
