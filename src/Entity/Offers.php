@@ -135,7 +135,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'patch',
         'get'
     ],
-    paginationItemsPerPage: 10 // Pagination, items par page
+    paginationItemsPerPage: 10, 
+    normalizationContext: ['groups' => ['item:offers']] // Pagination, items par page
 )]
 // #[ApiFilter(OrderFilter::class, properties: ['id' => 'ASC', 'description' => 'DESC'])]
 #[ApiFilter(SearchFilter::class, properties: ['city' => 'exact', 'diploma' => 'exact'])]
@@ -144,7 +145,7 @@ class Offers
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["item"])]
+    #[Groups(["item",'item:offers'])]
 
     private $id;
 
@@ -154,43 +155,51 @@ class Offers
      * @var File
      */
     #[Assert\File(mimeTypes: ["image/*"], maxSize: '50M')]
+    #[Groups(["item",'item:offers'])]
     private $photoFile;
 
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item",'item:offers'])]
     private $jobs;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item",'item:offers'])]
     private $description;
 
     #[ORM\Column(type: 'date')]
+    #[Groups(["item",'item:offers'])]
     private $publication_date;
 
     #[ORM\Column(type: 'date')]
+    #[Groups(["item",'item:offers'])]
     private $expiration_date;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item",'item:offers'])]
     private $image;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item",'item:offers'])]
     private $type_of_contract;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["item",'item:offers'])]
     private $type_of_work;
 
     #[ORM\ManyToOne(targetEntity: Cities::class, inversedBy: 'offers')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["item:offers"])]
+    #[Groups(["item",'item:offers'])]
     private $city;
 
     #[ORM\ManyToOne(targetEntity: Diplomas::class, inversedBy: 'offers')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["item:offers"])]
+    #[Groups(["item",'item:offers'])]
     private $diploma;
 
     #[ORM\ManyToOne(targetEntity: Entreprises::class, inversedBy: 'offers')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'cascade')] // DELETE ON CASCADE
-    #[Groups(["item:offers"])]
+    #[Groups(["item",'item:offers'])]
     private $entreprise;
 
     public function __construct()
